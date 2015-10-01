@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaapplication5;
+package ftpClient;
 
 /**
  *
@@ -12,7 +12,7 @@ package javaapplication5;
 import java.net.*;
 import java.io.*;
 
-public class EchoClient {
+public class FileDialogClient {
   //套接字程序设计.  
   private Socket socket=null;
    
@@ -20,7 +20,7 @@ public class EchoClient {
   private PrintWriter pw;
   private BufferedReader br;
 
-  public EchoClient(String ip,String port) throws IOException{
+  public FileDialogClient(String ip,String port) throws IOException{
       
     socket=new Socket(ip,Integer.parseInt(port));
      //主动向服务器发起连接,实现TCP中三次握手的过程。
@@ -57,7 +57,7 @@ public class EchoClient {
   
    //模块内测试与运行.
   public static void main(String args[]) throws IOException{
-    EchoClient ec=new EchoClient("127.0.0.1","8008");
+    FileDialogClient ec=new FileDialogClient("127.0.0.1","8008");
     ec.send("123456789");
     System.out.println(ec.receive());
     ec.close();      

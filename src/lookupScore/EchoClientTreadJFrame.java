@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package javaapplication5;
+package lookupScore;
 
+import socketTCP.*;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,14 +13,14 @@ import java.util.logging.Logger;
  *
  * @author Administrator
  */
-public class EchoClientJFrame extends javax.swing.JFrame {
+public class EchoClientTreadJFrame extends javax.swing.JFrame {
     
     private EchoClient ec;
     private String msg;
     /**
      * Creates new form IOJFrame
      */
-    public EchoClientJFrame() {
+    public EchoClientTreadJFrame() {
         initComponents();
     }
 
@@ -49,11 +50,11 @@ public class EchoClientJFrame extends javax.swing.JFrame {
 
         jLabel1.setText("IP地址：");
 
-        addressTextField.setText("127.0.0.1");
+        addressTextField.setText("222.201.101.15");
 
         jLabel2.setText("端口：");
 
-        portTextField.setText("8008");
+        portTextField.setText("9009");
 
         jButton1.setText("连接");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -154,6 +155,27 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         try {
             ec = new EchoClient(ip, port);
             messageTextArea.append("服务器连接成功.\r\n");
+            Thread receiver = new Thread() {
+                public void run() {
+                    String msg = null;
+                    while(true) {
+                        try {
+                            msg = ec.receive();
+                        } catch (IOException ex){
+                            messageTextArea.append("套接字异常关闭" + "\n");
+                        }
+                        if(msg != null) {
+                            messageTextArea.append(msg + "\n");
+                            inputTextArea.setText("");
+                        }
+                        else {
+                            messageTextArea.append("对话已关闭！" + "\n");
+                            break;
+                        }
+                    }
+                }
+            };
+            receiver.start();
         } catch (IOException ex) {
             messageTextArea.append("服务器连接失败.\r\n");
         }
@@ -165,11 +187,8 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         System.out.println(msg);
         try {
             ec.send(msg);//发送一串字符。
-            msg = ec.receive();
-            messageTextArea.append(msg + '\n');
-            inputTextArea.setText("");
         } catch (IOException ex) {
-            Logger.getLogger(EchoClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EchoClientTreadJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_sendButtonActionPerformed
 
@@ -200,20 +219,23 @@ public class EchoClientJFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EchoClientJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EchoClientTreadJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EchoClientJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EchoClientTreadJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EchoClientJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EchoClientTreadJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EchoClientJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EchoClientTreadJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new EchoClientJFrame().setVisible(true);
+                new EchoClientTreadJFrame().setVisible(true);
             }
         });
     }
