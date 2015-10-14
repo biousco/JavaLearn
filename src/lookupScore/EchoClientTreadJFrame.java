@@ -166,7 +166,7 @@ public class EchoClientTreadJFrame extends javax.swing.JFrame {
                         }
                         if(msg != null) {
                             messageTextArea.append(msg + "\n");
-                            inputTextArea.setText("");
+                            
                         }
                         else {
                             messageTextArea.append("对话已关闭！" + "\n");
@@ -187,6 +187,7 @@ public class EchoClientTreadJFrame extends javax.swing.JFrame {
         System.out.println(msg);
         try {
             ec.send(msg);//发送一串字符。
+            inputTextArea.setText("");
         } catch (IOException ex) {
             Logger.getLogger(EchoClientTreadJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
