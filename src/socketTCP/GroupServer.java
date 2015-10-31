@@ -36,8 +36,7 @@ public class GroupServer {
     public GroupServer() throws IOException {
 
         serverSocket = new ServerSocket(port);//启动服务器
-        groupMembers = new HashSet<>();//定义在线组员集合
-
+        groupMembers = new HashSet<Socket>();//初始化在线组员表
         //创建线程池
         //Runtime的availableProcessors()方法返回当前系统的CPU的数目
         //系统的CPU越多，线程池中工作线程的数目也越多
