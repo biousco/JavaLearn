@@ -1,9 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package socketTCP;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,121 +16,115 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- *
- * @author 林浩笙
- */
+
+
+
 public class GroupServer {
+  private int port=8008;
+  private ServerSocket serverSocket;
+  private ExecutorService executorService;  //线程池
+  private final int POOL_SIZE=15;  //单个CPU时线程池中工作线程的数目
+  private static Set<Socket>  groupMembers;  //定义在线组员表
 
-    private final int port = 8008;
-    private final ServerSocket serverSocket;
-    private final ExecutorService executorService;  //线程池
-    private final int POOL_SIZE = 15;  //单个CPU时线程池中工作线程的数目
+  
+  public GroupServer() throws IOException {
 
-    private static Set<Socket> groupMembers;
+serverSocket = new ServerSocket(port);//启动服务器
 
-    public GroupServer() throws IOException {
+    //创建线程池
+    //Runtime的availableProcessors()方法返回当前系统的CPU的数目
+    //系统的CPU越多，线程池中工作线程的数目也越多
+    executorService= Executors.newFixedThreadPool(
+	    Runtime.getRuntime().availableProcessors() * POOL_SIZE);
+    groupMembers = new HashSet<Socket>();//初始化在线组员表
 
-        serverSocket = new ServerSocket(port);//启动服务器
-        groupMembers = new HashSet<Socket>();//初始化在线组员表
-        //创建线程池
-        //Runtime的availableProcessors()方法返回当前系统的CPU的数目
-        //系统的CPU越多，线程池中工作线程的数目也越多
-        executorService = Executors.newFixedThreadPool(
-                Runtime.getRuntime().availableProcessors() * POOL_SIZE);
+    System.out.println("群组聊天服务器启动");
+  }
 
-        System.out.println("服务器启动");
+  public void service() {
+        
+     while (true) {
+      Socket socket=null;
+      try {
+        socket = serverSocket.accept(); //监听客户请求, 处于阻塞状态.
+        groupMembers.add(socket);
+        //接受一个客户请求,从线程池中拿出一个线程专门处理该客户.
+        executorService.execute(new Handler(socket));
+      }catch (IOException e) { e.printStackTrace(); }
     }
+  }
+  
+  public static void sendToAllMembers(String msg)throws IOException{
 
-    public void service() {
+   PrintWriter     pw;
+   Socket        tempSocket;
+   OutputStream  socketOut;
 
-        while (true) {
-            Socket socket = null;
-            try {
-                System.out.println("执行");
-                socket = serverSocket.accept(); //监听客户请求, 处于阻塞状态.
-                //接受一个客户请求,从线程池中拿出一个线程专门处理该客户.
-                executorService.execute(new GroupHandler(socket));
-                groupMembers.add(socket);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void sendToAllMembers(String msg) throws IOException {
-
-        PrintWriter pw;
-        Socket tempSocket;
-        OutputStream socketOut;
-
-        Iterator it = groupMembers.iterator();
-        while (it.hasNext()) {//遍历在线成员set集合.
-            tempSocket = (Socket) it.next(); //取出一个成员
-            socketOut = tempSocket.getOutputStream();//得到输出流
-            pw = new PrintWriter(new OutputStreamWriter(socketOut, "GB2312"), true);
-            pw.println(msg);
-        }
-    }//群组发送结束。
-
-    public static void removeMember(Socket socket) {
+   Iterator it=groupMembers.iterator();
+   while(it.hasNext()){//遍历在线成员set集合.
+       tempSocket=(Socket) it.next(); //取出一个成员
+       socketOut =tempSocket.getOutputStream();//得到输出流
+       pw=new PrintWriter(new OutputStreamWriter(socketOut,"GB2312"),true);              
+       pw.println(msg);
+     }
+  }//群组发送结束。
+  
+  public static void removeMember(Socket socket){
         groupMembers.remove(socket);//删除一个成员
-    }
-
-    public static void main(String args[]) throws IOException {
-        new GroupServer().service();
-    }
 }
+ 
+  
 
-class GroupHandler implements Runnable {//定义内部类（一个线程类）
+  public static void main(String args[])throws IOException {
+    new GroupServer().service();
+  }
+}
+class Handler implements Runnable{//定义内部类（一个线程类）
+  private Socket socket;
+  
+  public Handler(Socket socket){
+    this.socket=socket;
+      }
+  private PrintWriter getWriter(Socket socket)throws IOException{
+    OutputStream socketOut = socket.getOutputStream();
+    return new PrintWriter(new OutputStreamWriter(socketOut,"GB2312"),true);
+  }
 
-    private Socket socket;
+  private BufferedReader getReader(Socket socket)throws IOException{
+    InputStream socketIn = socket.getInputStream();
+    return new BufferedReader(new InputStreamReader(socketIn,"GB2312"));
+  }
 
-    public GroupHandler(Socket socket) {
-        this.socket = socket;
-    }
+  public String echo(String msg){
+      return"echo:"+msg;
+  }
+  
+  public void run(){
+    try {
+      System.out.println("New connection accepted " +
+      socket.getInetAddress() + ":" +socket.getPort());
 
-    private PrintWriter getWriter(Socket socket) throws IOException {
-        OutputStream socketOut = socket.getOutputStream();
-        return new PrintWriter(new OutputStreamWriter(socketOut, "GB2312"), true);
-    }
+      BufferedReader br =getReader(socket);
 
-    private BufferedReader getReader(Socket socket) throws IOException {
-        InputStream socketIn = socket.getInputStream();
-        return new BufferedReader(new InputStreamReader(socketIn, "GB2312"));
-    }
 
-    @Override
-    public void run() {
-        try {
-            System.out.println("New connection accepted "
-                    + socket.getInetAddress() + ":" + socket.getPort());
+      String msg = null;
+      while ((msg = br.readLine()) != null) {
+        
+        GroupServer.sendToAllMembers(msg);//发送至给所有组员
 
-            BufferedReader br = getReader(socket);
-            PrintWriter pw = getWriter(socket);
-
-            String msg = null;
-            while ((msg = br.readLine()) != null) {
-
-                GroupServer.sendToAllMembers(msg);
-                //send to client.
-
-                if (msg.contains("bye".subSequence(0, 2))) {
-                    System.out.println(socket.getInetAddress() + ":" + "Exit");
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (socket != null) {
-                    socket.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+      if(msg.indexOf("bye")!=-1){
+          GroupServer.removeMember(socket);  //有人说BYE，将其从表中移出
+          break;
         }
+      }
+    }catch (IOException e) {
+       e.printStackTrace();
+    }finally {
+       try{
+         if(socket!=null)socket.close();
+       }catch (IOException e) {e.printStackTrace();}
     }
+  }
 
 }
+

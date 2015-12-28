@@ -12,12 +12,12 @@ import java.util.Date;
  *
  * @author Administrator
  */
-public class EchoClientJFrame extends javax.swing.JFrame {
+public class EchoClientThreadJFrame1 extends javax.swing.JFrame {
     private EchoClient ec;
     /**
      * Creates new form IOJFrame
      */
-    public EchoClientJFrame() {
+    public EchoClientThreadJFrame1() {
         initComponents();
         this.setLocation(200, 300);
         ec = null;
@@ -83,7 +83,11 @@ public class EchoClientJFrame extends javax.swing.JFrame {
             }
         });
 
+        jTextField2.setText("222.201.101.15");
+
         jLabel3.setText("端口：");
+
+        jTextField3.setText("9009");
 
         jButton3.setText("连接");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -169,7 +173,7 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         
         try {
             ec.send(msgSend);
-            msgRead = ec.receive();
+            //msgRead = ec.receive();
         } catch (IOException ex) {}
         
         jTextArea1.append(msgRead + '\n');
@@ -198,6 +202,27 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         String ip = jTextField2.getText();
         String port = jTextField3.getText();
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+            String str = null;
+            while(true){
+                try{
+                    str = ec.receive();
+                }catch(IOException e) {
+                    jTextArea1.append("套接字异常关闭"+"\n");;
+                }
+               if (str!=null)
+                   jTextArea1.append(str+"\n");
+               else{
+                   jTextArea1.append("对话已关闭！\n");
+                   break;
+               }
+                }
+            }
+        };
+        thread.start();
+        
         
         try {
             ec = new EchoClient(ip,port);
@@ -237,7 +262,7 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new EchoClientJFrame().setVisible(true);
+                new EchoClientThreadJFrame1().setVisible(true);
             }
         });
     }

@@ -2,22 +2,26 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package socketTCP;
+package Http;
 
+import socketTCP.*;
 import frameIO.*;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Administrator
  */
-public class EchoClientJFrame extends javax.swing.JFrame {
+public class SocketClientJFrame extends javax.swing.JFrame {
     private EchoClient ec;
+    public String address;
     /**
      * Creates new form IOJFrame
      */
-    public EchoClientJFrame() {
+    public SocketClientJFrame() {
         initComponents();
         this.setLocation(200, 300);
         ec = null;
@@ -35,8 +39,6 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jTextField2 = new javax.swing.JTextField();
@@ -44,6 +46,8 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         jTextField3 = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,20 +60,7 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jLabel2.setText("信息录入区：");
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jTextField1KeyPressed(evt);
-            }
-        });
-
-        jButton1.setText("发送");
+        jButton1.setText("网页请求");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -83,7 +74,16 @@ public class EchoClientJFrame extends javax.swing.JFrame {
             }
         });
 
+        jTextField2.setText("222.201.101.15");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
         jLabel3.setText("端口：");
+
+        jTextField3.setText("8080");
 
         jButton3.setText("连接");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -92,43 +92,45 @@ public class EchoClientJFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("信息显示区：");
+        jLabel4.setText("网页显示区：");
+
+        jButton4.setText("发送");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton4)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addGap(22, 22, 22))
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1)
-                            .addComponent(jTextField1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                                .addComponent(jButton3))))
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 233, Short.MAX_VALUE)
+                        .addComponent(jButton3))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(102, 102, 102)
-                                .addComponent(jButton1)
-                                .addGap(91, 91, 91)
-                                .addComponent(jButton2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel4)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel4)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jTextField1))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -144,16 +146,15 @@ public class EchoClientJFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(23, 23, 23)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(86, Short.MAX_VALUE))
+                    .addComponent(jButton4))
+                .addGap(35, 35, 35))
         );
 
         pack();
@@ -164,11 +165,21 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         String msgRead = null;
         String msgSend;
         
-        msgSend = jTextField1.getText();
-        jTextField1.setText(null);
+        StringBuffer msg;
+        
+        msg = new StringBuffer("GET/HTTP/1.1\r\n");
+        msg.append("host:").append(address).append("\r\n");
+        msg.append("Accept: */*\r\n");
+        msg.append("Accept-Language: zh-cn\r\n");
+        msg.append("Accept-Encoding: gzip, deflate\r\n");
+        msg.append("User-Agent: Mozilla/4.0(compatible; MSIE 6.0; Windows XP)\r\n");
+        msg.append("Connection: Keep-Alive\r\n");
+        //msg.append("Cookie: JSESSIONID=4CB8F781A34F5BDEC2258DA00476DC8B; BIGipServerVisualSiteBuilder_8008=190949386.18463.0000\r\n");
+        
+        System.out.println(msg);
         
         try {
-            ec.send(msgSend);
+            ec.send(msg.toString());
             msgRead = ec.receive();
         } catch (IOException ex) {}
         
@@ -182,30 +193,57 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-        this.jButton1ActionPerformed(evt);
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
-        // TODO add your handling code here:
-        if(evt.isAltDown()) {
-            this.jButton1ActionPerformed(null);
-        }
-    }//GEN-LAST:event_jTextField1KeyPressed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        String ip = jTextField2.getText();
+        address = jTextField2.getText();
         String port = jTextField3.getText();
         
         try {
-            ec = new EchoClient(ip,port);
+            ec = new EchoClient(address,port);
             jTextArea1.append("服务器连接成功.\r\n");
         } catch (IOException ex) {
             jTextArea1.append("服务器连接失败.\r\n");
         }
+        
+        Thread re = new Thread() {
+            public void run() {
+                String msg = null;
+                while(true) {
+                    try {
+                        msg = ec.receive();
+                    } catch (IOException ex) {
+                        Logger.getLogger(SocketClientJFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if(msg != null) {
+                        jTextArea1.append(msg+"\n");
+                    }
+                }
+            }
+            
+        };
+        re.start();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        String msgRead = null;
+        String msgSend;
+
+        msgSend = jTextField1.getText();
+        jTextField1.setText(null);
+        
+        try {
+            System.out.println(msgSend);
+            ec.send(msgSend);
+            msgRead = ec.receive();
+        } catch (IOException ex) {}
+        
+        jTextArea1.append(msgRead + '\n');
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -237,7 +275,7 @@ public class EchoClientJFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new EchoClientJFrame().setVisible(true);
+                new SocketClientJFrame().setVisible(true);
             }
         });
     }
@@ -245,8 +283,8 @@ public class EchoClientJFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;

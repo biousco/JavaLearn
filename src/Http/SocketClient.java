@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package socketTCP;
+package Http;
 
+import socketTCP.*;
 import java.net.*;
 import java.io.*;
 
@@ -11,13 +12,13 @@ import java.io.*;
  *
  * @author Administrator
  */
-public class EchoClient {
+public class SocketClient {
     private Socket socket=null;
     
     private PrintWriter pw;
     private BufferedReader br;
     
-    public EchoClient(String ip,String port) throws IOException{
+    public SocketClient(String ip,String port) throws IOException{
         socket=new Socket(ip,Integer.parseInt(port));
         
         OutputStream socketOut = socket.getOutputStream();
@@ -28,7 +29,6 @@ public class EchoClient {
     }
     
     public void send(String msg)throws IOException{
-        
         pw.println(msg);
     }
     
@@ -45,7 +45,7 @@ public class EchoClient {
     }
     
     public static void main(String args[]) throws IOException{
-        EchoClient ec=new EchoClient("127.0.0.1","8008");
+        SocketClient ec=new SocketClient("127.0.0.1","8008");
         ec.send("123456789");
         System.out.println(ec.receive());
         ec.close(); 

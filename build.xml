@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- You may freely edit this file. See commented blocks below for -->
 <!-- some examples of how to customize the build. -->
 <!-- (If you delete it and reopen the project it will be recreated.) -->
@@ -7,8 +7,8 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="JavaLearn" default="default" basedir=".">
-    <description>Builds, tests, and runs the project JavaLearn.</description>
+<project basedir="." default="default" name="JavaApp">
+    <description>Builds, tests, and runs the project JavaApp.</description>
     <import file="nbproject/build-impl.xml"/>
     <!--
 
@@ -58,7 +58,7 @@
 
     An example of overriding the target for project execution could look like this:
 
-        <target name="run" depends="JavaLearn-impl.jar">
+        <target name="run" depends="JavaApp-impl.jar">
             <exec dir="bin" executable="launcher.exe">
                 <arg file="${dist.jar}"/>
             </exec>
@@ -70,4 +70,16 @@
     nbproject/build-impl.xml file. 
 
     -->
+<!--Target required for SAAS(REST) services: XJCTask initialization-->
+<target depends="-init-project" name="saas-init-xjc">
+<taskdef classname="com.sun.tools.xjc.XJCTask" name="xjc">
+<classpath path="${libs.jaxb.classpath}"/>
+</taskdef>
+</target>
+
+<!--Target required for SAAS(REST) services: data types generation-->
+<target depends="saas-init-xjc" name="saas.xjc.flickr.photoservice">
+<xjc destdir="src" package="flickr.photoservice.flickrresponse" schema="src/META-INF/FlickrResponse.xsd" target="2.1"/>
+</target>
+
 </project>

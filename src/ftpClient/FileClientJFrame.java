@@ -99,7 +99,7 @@ public class FileClientJFrame extends javax.swing.JFrame {
 
         jLabel_IPAddress.setText("IP地址：");
 
-        jTextField_IPAddress.setText("192.168.221.74");
+        jTextField_IPAddress.setText("10.188.2.252");
         jTextField_IPAddress.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField_IPAddressActionPerformed(evt);
@@ -108,7 +108,7 @@ public class FileClientJFrame extends javax.swing.JFrame {
 
         jLabel_port.setText("端口：");
 
-        jTextField_port.setText("8081");
+        jTextField_port.setText("2021");
         jTextField_port.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField_portActionPerformed(evt);
@@ -279,7 +279,7 @@ public class FileClientJFrame extends javax.swing.JFrame {
         };
         re.start();
         
-        this.jTextField_input.setText("20131003615 林明明");
+        this.jTextField_input.setText("20131003600 骆冠越");
     }//GEN-LAST:event_jButton_connectActionPerformed
 
     private void jButton_connectKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButton_connectKeyPressed
